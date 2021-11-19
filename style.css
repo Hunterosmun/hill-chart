@@ -1,0 +1,90 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: sans-serif;
+  font-size: 12px;
+}
+
+h1 {
+  font-size: 45px;
+}
+
+.btn {
+  border: none;
+  padding: 0 20px;
+  border-radius: 4px;
+  height: 36px;
+  background-color: #7e41ff;
+  color: white;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  transition: background-color 100ms;
+  user-select: none;
+}
+
+.btn:hover {
+  background-color: #5c2fbe;
+}
+
+.btn:active {
+  box-shadow: none;
+  position: relative;
+  top: 2px;
+}
+
+.main-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.chart {
+  padding-bottom: 30px;
+}
+
+.title {
+  font-size: 30px;
+  padding-bottom: 10px;
+}
+
+.chart-data {
+  outline: 1px solid #333;
+  padding: 10px;
+  position: relative;
+}
+
+.single-element {
+  width: 325px;
+  padding: 5px 0px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 25px;
+}
+
+.saved {
+  justify-content: flex-start;
+}
+
+.saved span {
+  padding-left: 40px;
+}
+
+.bottom-options {
+  display: flex;
+  justify-content: space-between;
+}
+
+input {
+  height: 36px;
+  padding: 4px 8px;
+  border: 2px solid #333;
+}
+
+.edit {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+}
