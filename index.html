@@ -13,18 +13,18 @@
           <div>
             <h1>Hill Charts</h1>
           </div>
-          <div class="chart">
+          <div class="chart saved">
             <div class="title">Learning Code I</div>
             <div class="chart-data">
-              <div class="single-element saved">
+              <div class="single-element">
                 <div>Elixir</div>
-                <span>5</span>
+                <span class="num">5</span>
               </div>
-              <div class="single-element saved">
+              <div class="single-element">
                 <div>CSS</div>
-                <span>50</span>
+                <span class="num">50</span>
               </div>
-              <div class="edit"><button class="btn">Edit</button></div>
+              <button class="btn edit">Edit</button>
             </div>
           </div>
           <div class="chart">
@@ -32,28 +32,28 @@
             <div class="chart-data">
               <div class="single-element">
                 <input type="text" placeholder="Javascript" />
-                <button class="btn">-</button>
-                <span>32</span>
-                <button class="btn">+</button>
+                <button class="btn minus">-</button>
+                <span class="num">32</span>
+                <button class="btn plus">+</button>
               </div>
               <div class="single-element">
                 <input type="text" placeholder="HTML" />
-                <button class="btn">-</button>
-                <span>50</span>
-                <button class="btn">+</button>
+                <button class="btn minus">-</button>
+                <span class="num">100</span>
+                <button class="btn plus">+</button>
               </div>
               <div class="bottom-options">
-                <div><button class="btn">New Aspect</button></div>
-                <div><button class="btn">Save</button></div>
+                <button class="btn new-aspect">New Aspect</button>
+                <button class="btn save">Save</button>
               </div>
             </div>
           </div>
-          <div>
-            <button class="btn">New Chart</button>
-          </div>
+
+          <button class="btn new-chart">New Chart</button>
         </div>
         <div class="chart-box"></div>
       </div>
     </div>
+    <script src="index.js"></script>
   </body>
 </html>
