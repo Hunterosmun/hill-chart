@@ -13,11 +13,12 @@ function createElement (tag, classes, text = '') {
   return el
 }
 
-function createInput (value = '', placeholder = 'Your Text Here') {
+function createInput (value = '', placeholder = 'Your Text Here', theclass) {
   const input = document.createElement('input')
   input.type = 'text'
   input.placeholder = placeholder
   input.value = value
+  input.classList.add(theclass)
   return input
 }
 
@@ -64,42 +65,61 @@ function newAspectFn (e) {
   container.appendChild(createElement('button', 'btn minus', '-'))
   container.appendChild(createElement('span', 'num', '0'))
   container.appendChild(createElement('button', 'btn plus', '+'))
+  container.appendChild(createElement('button', 'btn delete-row', 'Delete'))
 
   // find the spot, insert the thing
   e.target.parentElement.before(container)
 
   bind('.plus', plusFn, container)
   bind('.minus', minusFn, container)
+  bind('.delete-row', deleteRowFn, container)
 }
 
 function newChartFn (e) {
   const container = createElement('div', 'chart')
-  container.innerHTML = `
-    <div class="title">New Chart</div>
-    <div class="chart-data">
-      <div class="single-element">
-        <input type="text" placeholder="Your Text Here" />
-        <button class="btn minus">-</button>
-        <span class="num">0</span>
-        <button class="btn plus">+</button>
-      </div>
-      <div class="bottom-options">
-        <button class="btn new-aspect">New Aspect</button>
-        <button class="btn save">Save</button>
-      </div>
-    </div>
-  `
+
+  container.appendChild(createInput('', 'Title', 'title'))
+  const chartData = createElement('div', 'chart-data')
+  const singleRow = createElement('div', 'single-element')
+  singleRow.appendChild(createInput())
+  singleRow.appendChild(createElement('button', 'btn minus', '-'))
+  singleRow.appendChild(createElement('span', 'num', '0'))
+  singleRow.appendChild(createElement('button', 'btn plus', '+'))
+  singleRow.appendChild(createElement('button', 'btn delete-row', 'Delete'))
+  chartData.appendChild(singleRow)
+  container.appendChild(chartData)
+  const bottomOptions = createElement('div', 'bottom-options')
+  bottomOptions.appendChild(
+    createElement('button', 'btn new-aspect', 'New Aspect')
+  )
+  bottomOptions.appendChild(
+    createElement('button', 'btn delete-chart', 'Delete Chart')
+  )
+  bottomOptions.appendChild(createElement('button', 'btn save', 'Save'))
+  chartData.appendChild(bottomOptions)
+
   e.target.before(container)
   // add event listeners
   bind('.minus', minusFn, container)
   bind('.plus', plusFn, container)
   bind('.new-aspect', newAspectFn, container)
   bind('.save', saveFn, container)
+  bind('.delete-chart', deleteChartFn)
+  bind('.delete-row', deleteRowFn)
 }
 
 function editFn (e) {
   const parent = e.target.closest('.chart')
   parent.classList.remove('saved')
+
+  const first = parent.querySelector('div')
+  const titleText = parent.querySelector('div').innerText
+  if (titleText) {
+    first.firstChild.remove()
+    first.appendChild(createInput(titleText, '', 'title'))
+  } else {
+    first.appendChild(createInput('', 'Title', 'title'))
+  }
 
   parent.querySelectorAll('.single-element').forEach(container => {
     const value = container.querySelector('div').innerText
@@ -109,10 +129,14 @@ function editFn (e) {
     container.appendChild(createElement('button', 'btn minus', '-'))
     container.appendChild(createElement('span', 'num', num))
     container.appendChild(createElement('button', 'btn plus', '+'))
+    container.appendChild(createElement('button', 'btn delete-row', 'Delete'))
   })
 
   const bottom = createElement('div', 'bottom-options')
   bottom.appendChild(createElement('button', 'btn new-aspect', 'New Aspect'))
+  bottom.appendChild(
+    createElement('button', 'btn delete-chart', 'Delete Chart')
+  )
   bottom.appendChild(createElement('button', 'btn save', 'Save'))
 
   parent.querySelector('.chart-data').appendChild(bottom)
@@ -121,6 +145,16 @@ function editFn (e) {
   bind('.plus', plusFn, parent)
   bind('.new-aspect', newAspectFn, parent)
   bind('.save', saveFn, parent)
+  bind('.delete-row', deleteRowFn, parent)
+  bind('.delete-chart', deleteChartFn, parent)
+}
+
+function deleteRowFn (e) {
+  const btn = e.target.parentElement.remove()
+}
+
+function deleteChartFn (e) {
+  const btn = e.target.parentElement.parentElement.parentElement.remove()
 }
 
 // ---- initial event listeners ------------------------------------------------
@@ -131,3 +165,5 @@ bind('.new-aspect', newAspectFn)
 bind('.save', saveFn)
 bind('.new-chart', newChartFn)
 bind('.edit', editFn)
+bind('.delete-row', deleteRowFn)
+bind('.delete-chart', deleteChartFn)

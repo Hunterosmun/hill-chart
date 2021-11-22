@@ -42,11 +42,13 @@ h1 {
 
 .chart {
   padding-bottom: 30px;
+  font-size: 45px;
 }
 
 .title {
   font-size: 30px;
-  padding-bottom: 10px;
+  padding-bottom: 10px 10px;
+  margin-bottom: 10px;
 }
 
 .chart-data {
@@ -61,7 +63,7 @@ h1 {
 }
 
 .single-element {
-  width: 350px;
+  width: 400px;
   padding: 5px 0px;
   display: flex;
   align-items: center;
