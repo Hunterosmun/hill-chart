@@ -8,55 +8,38 @@
   </head>
   <body>
     <div id="app">
-      <div class="main-box">
-        <div class="menu-box">
-          <div>
-            <h1>Hill Charts</h1>
-          </div>
-          <div class="chart saved">
-            <div>Title</div>
-            <div class="chart-data">
-              <div class="single-element">
-                <div>Elixir</div>
-                <span class="num">5</span>
-              </div>
-              <div class="single-element">
-                <div>CSS</div>
-                <span class="num">50</span>
-              </div>
-              <button class="btn edit">Edit</button>
+      <h1>Hill Charts</h1>
+      <div class="chart">
+        <input type="text" placeholder="Title" class="title" />
+        <div class="content">
+          <div class="chart-data">
+            <div class="single-element" data-id="7">
+              <input type="text" placeholder="Your Text Here" />
+              <button class="btn minus">-</button>
+              <span class="num">32</span>
+              <button class="btn plus">+</button>
+              <button class="btn delete-row">Delete</button>
+            </div>
+            <div class="bottom-options">
+              <button class="btn new-aspect">New Aspect</button>
+              <button class="btn delete-chart">Delete Chart</button>
+              <button class="btn save">Save</button>
             </div>
           </div>
-          <div class="chart">
-            <input type="text" placeholder="Title" class="title" />
-            <div class="chart-data">
-              <div class="single-element">
-                <input type="text" placeholder="Javascript" />
-                <button class="btn minus">-</button>
-                <span class="num">32</span>
-                <button class="btn plus">+</button>
-                <button class="btn delete-row">Delete</button>
-              </div>
-              <div class="single-element">
-                <input type="text" placeholder="HTML" />
-                <button class="btn minus">-</button>
-                <span class="num">100</span>
-                <button class="btn plus">+</button>
-                <button class="btn delete-row">Delete</button>
-              </div>
-              <div class="bottom-options">
-                <button class="btn new-aspect">New Aspect</button>
-                <button class="btn delete-chart">Delete Chart</button>
-                <button class="btn save">Save</button>
-              </div>
-            </div>
-          </div>
-
-          <button class="btn new-chart">New Chart</button>
+          <svg width="250" height="60" viewBox="0 0 250 59">
+            <path
+              d="M 0 60
+            C 75  30 90  0  125 0
+            C 160 0  175 30 250 60"
+              stroke="#777"
+              fill="none"
+            />
+            <circle cx="10" cy="30" r="6" fill="#2fa0d5" data-id="7"></circle>
+          </svg>
         </div>
-        <div class="chart-box"></div>
       </div>
+      <button class="btn new-chart">New Chart</button>
     </div>
-    <script src="index.js"></script>
+    <script type="module" src="index.js"></script>
   </body>
 </html>

@@ -34,15 +34,25 @@ h1 {
   top: 2px;
 }
 
-.main-box {
+#app {
   display: flex;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
+}
+
+.content {
+  display: flex;
   align-items: center;
 }
 
 .chart {
   padding-bottom: 30px;
   font-size: 45px;
+}
+
+.chart:not(.saved) circle {
+  cursor: move;
 }
 
 .title {
@@ -54,6 +64,7 @@ h1 {
 .chart-data {
   outline: 1px solid #333;
   padding: 10px;
+  margin-right: 20px;
   position: relative;
 }
 

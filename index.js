@@ -1,3 +1,4 @@
+import { nanoid } from 'nanoid'
 // ---- Helper Functions -------------------------------------------------------
 
 function bind (selector, fn, container = document) {
@@ -60,7 +61,9 @@ function saveFn (e) {
 
 function newAspectFn (e) {
   // make the thing to insert
+  const id = nanoid()
   const container = createElement('div', 'single-element')
+  container.dataset.id = id
   container.appendChild(createInput())
   container.appendChild(createElement('button', 'btn minus', '-'))
   container.appendChild(createElement('span', 'num', '0'))
@@ -68,35 +71,63 @@ function newAspectFn (e) {
   container.appendChild(createElement('button', 'btn delete-row', 'Delete'))
 
   // find the spot, insert the thing
-  e.target.parentElement.before(container)
+  e.target.closest('.bottom-options').before(container)
+
+  const circle = document.createElementNS(
+    'http://www.w3.org/2000/svg',
+    'circle'
+  )
+  circle.setAttribute('cx', '10')
+  circle.setAttribute('cy', '30')
+  circle.setAttribute('r', '6')
+  const randomColor = Math.floor(Math.random() * 16777215).toString(16)
+  circle.setAttribute('fill', `#${randomColor}`)
+  circle.dataset.id = id
+  e.target
+    .closest('.chart')
+    .querySelector('svg')
+    .appendChild(circle)
 
   bind('.plus', plusFn, container)
   bind('.minus', minusFn, container)
   bind('.delete-row', deleteRowFn, container)
+  setupCircle(circle)
 }
 
 function newChartFn (e) {
   const container = createElement('div', 'chart')
-
+  const content = createElement('div', 'content')
   container.appendChild(createInput('', 'Title', 'title'))
+  container.appendChild(content)
+
   const chartData = createElement('div', 'chart-data')
-  const singleRow = createElement('div', 'single-element')
-  singleRow.appendChild(createInput())
-  singleRow.appendChild(createElement('button', 'btn minus', '-'))
-  singleRow.appendChild(createElement('span', 'num', '0'))
-  singleRow.appendChild(createElement('button', 'btn plus', '+'))
-  singleRow.appendChild(createElement('button', 'btn delete-row', 'Delete'))
-  chartData.appendChild(singleRow)
-  container.appendChild(chartData)
+  content.appendChild(chartData)
   const bottomOptions = createElement('div', 'bottom-options')
-  bottomOptions.appendChild(
-    createElement('button', 'btn new-aspect', 'New Aspect')
-  )
+  const newaspect = createElement('button', 'btn new-aspect', 'New Aspect')
+  bottomOptions.appendChild(newaspect)
   bottomOptions.appendChild(
     createElement('button', 'btn delete-chart', 'Delete Chart')
   )
   bottomOptions.appendChild(createElement('button', 'btn save', 'Save'))
   chartData.appendChild(bottomOptions)
+
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+  svg.setAttribute('width', '250')
+  svg.setAttribute('height', '60')
+  svg.setAttribute('viewBox', '0 0 250 59')
+
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+  path.setAttribute(
+    'd',
+    `M 0 60
+  C 75  30 90  0  125 0
+  C 160 0  175 30 250 60`
+  )
+  path.setAttribute('stroke', '#777')
+  path.setAttribute('fill', 'none')
+  svg.appendChild(path)
+
+  content.appendChild(svg)
 
   e.target.before(container)
   // add event listeners
@@ -106,6 +137,8 @@ function newChartFn (e) {
   bind('.save', saveFn, container)
   bind('.delete-chart', deleteChartFn)
   bind('.delete-row', deleteRowFn)
+
+  newAspectFn({ target: newaspect })
 }
 
 function editFn (e) {
@@ -113,13 +146,9 @@ function editFn (e) {
   parent.classList.remove('saved')
 
   const first = parent.querySelector('div')
-  const titleText = parent.querySelector('div').innerText
-  if (titleText) {
-    first.firstChild.remove()
-    first.appendChild(createInput(titleText, '', 'title'))
-  } else {
-    first.appendChild(createInput('', 'Title', 'title'))
-  }
+  const titleText = first.innerText
+  first.before(createInput(titleText, 'Title', 'title'))
+  first.remove()
 
   parent.querySelectorAll('.single-element').forEach(container => {
     const value = container.querySelector('div').innerText
@@ -150,11 +179,58 @@ function editFn (e) {
 }
 
 function deleteRowFn (e) {
-  const btn = e.target.parentElement.remove()
+  const id = e.target.closest('.single-element').dataset.id
+  e.target
+    .closest('.chart')
+    .querySelector(`circle[data-id="${id}"]`)
+    .remove()
+  e.target.closest('.single-element').remove()
 }
 
 function deleteChartFn (e) {
-  const btn = e.target.parentElement.parentElement.parentElement.remove()
+  e.target.closest('.chart').remove()
+}
+
+const MIN = 6
+const MAX = 244
+let dragDetails = null
+function setupCircle (circle) {
+  circle.addEventListener('mousedown', e => {
+    if (e.target.closest('.chart').classList.contains('saved')) return
+    e.preventDefault()
+    dragDetails = {
+      startX: e.clientX,
+      cx: parseInt(circle.getAttribute('cx'), 10),
+      circle: e.target,
+      div: document.querySelector(
+        `.single-element[data-id="${circle.dataset.id}"] .num`
+      )
+    }
+    console.log('Down!')
+  })
+
+  window.addEventListener('mousemove', e => {
+    if (!dragDetails) return
+    const { startX, cx, circle, div } = dragDetails
+
+    let newX = e.clientX - startX + cx
+    if (newX < MIN) newX = MIN
+    if (newX > MAX) newX = MAX
+
+    const mid = (MAX - MIN) / 2
+    let newY = Math.abs(((newX - MIN - mid) / mid) * 60)
+    if (newY < MIN) newY = MIN
+    if (newY > 54) newY = 54
+
+    div.innerText = Math.round(((newX - 6) / 238) * 100)
+
+    circle.setAttribute('cx', newX)
+    circle.setAttribute('cy', newY)
+  })
+
+  window.addEventListener('mouseup', e => {
+    dragDetails = null
+  })
 }
 
 // ---- initial event listeners ------------------------------------------------
@@ -167,3 +243,7 @@ bind('.new-chart', newChartFn)
 bind('.edit', editFn)
 bind('.delete-row', deleteRowFn)
 bind('.delete-chart', deleteChartFn)
+
+document.querySelectorAll('circle').forEach(circle => {
+  setupCircle(circle)
+})
