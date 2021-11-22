@@ -1,4 +1,5 @@
 import { nanoid } from 'nanoid'
+import randomColor from 'random-color'
 // ---- Helper Functions -------------------------------------------------------
 
 function bind (selector, fn, container = document) {
@@ -30,6 +31,31 @@ function minusFn (e) {
   const number = parseInt(num.innerText, 10)
   if (number === 0) return
   num.innerText = number - 1
+
+  //here down is moving the circle
+  const element = e.target.closest('.single-element').dataset.id //maybe put this into the next lines querySelector?
+  const circle = e.target
+    .closest('.content')
+    .querySelector(`circle[data-id="${element}"]`)
+  let newX = parseInt(circle.getAttribute('cx'), 10)
+  // newX = Math.round(((newX - 6) / 238) * 100)
+  // newX = (newX / 100) * 238 - 6
+  // newX = ((newX/100) * 238)+6
+  newX -= 2.38
+  if (newX < MIN) newX = MIN
+
+  const mid = (MAX - MIN) / 2
+  let newY = Math.abs(((newX - MIN - mid) / mid) * 60)
+  if (newY < MIN) newY = MIN
+  if (newY > 54) newY = 54
+
+  circle.setAttribute('cx', newX)
+  circle.setAttribute('cy', newY)
+  const text = e.target
+    .closest('.content')
+    .querySelector(`text[data-id="${element}"]`)
+  text.setAttribute('x', newX)
+  text.setAttribute('y', newY + 20)
 }
 
 function plusFn (e) {
@@ -37,6 +63,30 @@ function plusFn (e) {
   const number = parseInt(num.innerText, 10)
   if (number === 100) return
   num.innerText = number + 1
+
+  //here down is moving the circle
+  const element = e.target.closest('.single-element').dataset.id //maybe put this into the next lines querySelector?
+  const circle = e.target
+    .closest('.content')
+    .querySelector(`circle[data-id="${element}"]`)
+  let newX = parseInt(circle.getAttribute('cx'), 10)
+  // newX = Math.round(((newX - 6) / 238) * 100)
+  // newX = (newX / 100) * 238 - 6
+  newX += 2.38
+  if (newX > MAX) newX = MAX
+
+  const mid = (MAX - MIN) / 2
+  let newY = Math.abs(((newX - MIN - mid) / mid) * 60)
+  if (newY < MIN) newY = MIN
+  if (newY > 54) newY = 54
+
+  circle.setAttribute('cx', newX)
+  circle.setAttribute('cy', newY)
+  const text = e.target
+    .closest('.content')
+    .querySelector(`text[data-id="${element}"]`)
+  text.setAttribute('x', newX)
+  text.setAttribute('y', newY + 20)
 }
 
 function saveFn (e) {
@@ -49,6 +99,12 @@ function saveFn (e) {
   parent.querySelector('.bottom-options').remove()
 
   parent.querySelectorAll('input').forEach(input => {
+    if (input.classList.contains('input')) {
+      const text = parent.querySelector(
+        `text[data-id="${input.parentElement.dataset.id}"]`
+      )
+      text.textContent = `${input.value}`
+    }
     input.before(createElement('div', '', input.value))
     input.remove()
   })
@@ -64,7 +120,8 @@ function newAspectFn (e) {
   const id = nanoid()
   const container = createElement('div', 'single-element')
   container.dataset.id = id
-  container.appendChild(createInput())
+  const input = createInput('', 'Your Text Here', 'input')
+  container.appendChild(input)
   container.appendChild(createElement('button', 'btn minus', '-'))
   container.appendChild(createElement('span', 'num', '0'))
   container.appendChild(createElement('button', 'btn plus', '+'))
@@ -80,13 +137,23 @@ function newAspectFn (e) {
   circle.setAttribute('cx', '10')
   circle.setAttribute('cy', '30')
   circle.setAttribute('r', '6')
-  const randomColor = Math.floor(Math.random() * 16777215).toString(16)
-  circle.setAttribute('fill', `#${randomColor}`)
+  circle.setAttribute('fill', randomColor().hexString())
   circle.dataset.id = id
   e.target
     .closest('.chart')
     .querySelector('svg')
     .appendChild(circle)
+
+  const text = document.createElementNS('http://www.w3.org/2000/svg', 'text')
+  text.setAttribute('x', '10')
+  text.setAttribute('y', '50')
+  text.setAttribute('font-size', '15')
+  // text.textContent = input.innerText
+  text.dataset.id = id
+  e.target
+    .closest('.chart')
+    .querySelector('svg')
+    .appendChild(text)
 
   bind('.plus', plusFn, container)
   bind('.minus', minusFn, container)
@@ -150,11 +217,16 @@ function editFn (e) {
   first.before(createInput(titleText, 'Title', 'title'))
   first.remove()
 
+  // parent.querySelectorAll('.input').forEach(input => {
+  //   parent.querySelector(`text[data-set="${input.dataset.id}"]`).textContent =
+  //     input.value
+  // })
+
   parent.querySelectorAll('.single-element').forEach(container => {
     const value = container.querySelector('div').innerText
     const num = container.querySelector('span').innerText
     container.innerHTML = ''
-    container.appendChild(createInput(value))
+    container.appendChild(createInput(value, 'Your Text Here', 'input'))
     container.appendChild(createElement('button', 'btn minus', '-'))
     container.appendChild(createElement('span', 'num', num))
     container.appendChild(createElement('button', 'btn plus', '+'))
@@ -204,14 +276,17 @@ function setupCircle (circle) {
       circle: e.target,
       div: document.querySelector(
         `.single-element[data-id="${circle.dataset.id}"] .num`
-      )
+      ),
+      text: e.target
+        .closest('svg')
+        .querySelector(`text[data-id="${circle.dataset.id}"]`)
+      // might need to set a textY and textX, but we'll see
     }
-    console.log('Down!')
   })
 
   window.addEventListener('mousemove', e => {
     if (!dragDetails) return
-    const { startX, cx, circle, div } = dragDetails
+    const { startX, cx, circle, div, text } = dragDetails
 
     let newX = e.clientX - startX + cx
     if (newX < MIN) newX = MIN
@@ -226,6 +301,8 @@ function setupCircle (circle) {
 
     circle.setAttribute('cx', newX)
     circle.setAttribute('cy', newY)
+    text.setAttribute('x', newX)
+    text.setAttribute('y', newY + 20)
   })
 
   window.addEventListener('mouseup', e => {
