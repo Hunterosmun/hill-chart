@@ -17,5 +17,9 @@
   "bugs": {
     "url": "https://github.com/Hunterosmun/hill-chart/issues"
   },
-  "homepage": "https://github.com/Hunterosmun/hill-chart#readme"
+  "homepage": "https://github.com/Hunterosmun/hill-chart#readme",
+  "dependencies": {
+    "babel-eslint": "^10.1.0",
+    "standard": "^16.0.4"
+  }
 }

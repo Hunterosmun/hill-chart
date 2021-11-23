@@ -1,0 +1,8 @@
+{
+  "root": true,
+  "extends": ["standard", "standard-jsx"],
+  "parser": "babel-eslint",
+  "rules": {
+    "react/jsx-handler-names": "off"
+  }
+}
