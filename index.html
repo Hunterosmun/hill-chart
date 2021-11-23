@@ -14,7 +14,7 @@
         <div class="content">
           <div class="chart-data">
             <div class="single-element" data-id="7">
-              <input type="text" placeholder="Your Text Here" />
+              <input type="text" placeholder="Your Text Here" class="input" />
               <button class="btn minus">-</button>
               <span class="num">32</span>
               <button class="btn plus">+</button>
@@ -34,8 +34,12 @@
               stroke="#777"
               fill="none"
             />
-            <circle cx="10" cy="30" r="6" fill="#2fa0d5" data-id="7"></circle>
-            <text x="10" y="50" font-size="15" data-id="7"></text>
+            <g transform="translate(10, 30)" data-id="7">
+              <circle r="6" fill="#2fa0d5"></circle>
+              <text y="3" x="10" font-size="12">
+                something awesome
+              </text>
+            </g>
           </svg>
         </div>
       </div>

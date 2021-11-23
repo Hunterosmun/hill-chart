@@ -2,9 +2,9 @@ import { nanoid } from 'nanoid'
 import randomColor from 'random-color'
 // ---- Helper Functions -------------------------------------------------------
 
-function bind (selector, fn, container = document) {
+function bind (selector, fn, container = document, event = 'click') {
   container.querySelectorAll(selector).forEach(btn => {
-    btn.addEventListener('click', fn)
+    btn.addEventListener(event, fn)
   })
 }
 
@@ -159,6 +159,7 @@ function newAspectFn (e) {
   bind('.plus', plusFn, container)
   bind('.minus', minusFn, container)
   bind('.delete-row', deleteRowFn, container)
+  bind('.input', updateText, container, 'input')
   setupCircle(circle)
 }
 
@@ -249,6 +250,7 @@ function editFn (e) {
   bind('.save', saveFn, parent)
   bind('.delete-row', deleteRowFn, parent)
   bind('.delete-chart', deleteChartFn, parent)
+  bind('.input', updateText, parent, 'input')
 }
 
 function deleteRowFn (e) {
@@ -266,6 +268,13 @@ function deleteRowFn (e) {
 
 function deleteChartFn (e) {
   e.target.closest('.chart').remove()
+}
+
+function updateText (e) {
+  const id = e.target.closest('.single-element').dataset.id
+  e.target
+    .closest('.chart')
+    .querySelector(`text[data-id="${id}"]`).textContent = e.target.value
 }
 
 const MIN = 6
@@ -325,6 +334,7 @@ bind('.new-chart', newChartFn)
 bind('.edit', editFn)
 bind('.delete-row', deleteRowFn)
 bind('.delete-chart', deleteChartFn)
+bind('.input', updateText, undefined, 'input')
 
 document.querySelectorAll('circle').forEach(circle => {
   setupCircle(circle)
