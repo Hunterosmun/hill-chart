@@ -28,9 +28,9 @@ function createInput (value = '', placeholder = 'Your Text Here', theclass) {
 
 function minusFn (e) {
   const num = e.target.parentElement.querySelector('.num')
-  const number = parseInt(num.innerText, 10)
-  if (number === 0) return
-  num.innerText = number - 1
+  const number = parseInt(num.innerText, 10) - 1
+  if (number < 0) return
+  num.innerText = number
 
   //here down is moving the circle
   const element = e.target.closest('.single-element').dataset.id //maybe put this into the next lines querySelector?
@@ -41,7 +41,8 @@ function minusFn (e) {
   // newX = Math.round(((newX - 6) / 238) * 100)
   // newX = (newX / 100) * 238 - 6
   // newX = ((newX/100) * 238)+6
-  newX -= 2.38
+  newX = (number / 100) * 238 + 6
+  console.log('minus' + newX)
   if (newX < MIN) newX = MIN
 
   const mid = (MAX - MIN) / 2
@@ -60,9 +61,9 @@ function minusFn (e) {
 
 function plusFn (e) {
   const num = e.target.parentElement.querySelector('.num')
-  const number = parseInt(num.innerText, 10)
-  if (number === 100) return
-  num.innerText = number + 1
+  const number = parseInt(num.innerText, 10) + 1
+  if (number > 100) return
+  num.innerText = number
 
   //here down is moving the circle
   const element = e.target.closest('.single-element').dataset.id //maybe put this into the next lines querySelector?
@@ -72,7 +73,8 @@ function plusFn (e) {
   let newX = parseInt(circle.getAttribute('cx'), 10)
   // newX = Math.round(((newX - 6) / 238) * 100)
   // newX = (newX / 100) * 238 - 6
-  newX += 2.38
+  newX = (number / 100) * 238 + 6
+  console.log('plus' + newX)
   if (newX > MAX) newX = MAX
 
   const mid = (MAX - MIN) / 2
@@ -148,7 +150,6 @@ function newAspectFn (e) {
   text.setAttribute('x', '10')
   text.setAttribute('y', '50')
   text.setAttribute('font-size', '15')
-  // text.textContent = input.innerText
   text.dataset.id = id
   e.target
     .closest('.chart')
@@ -255,6 +256,10 @@ function deleteRowFn (e) {
   e.target
     .closest('.chart')
     .querySelector(`circle[data-id="${id}"]`)
+    .remove()
+  e.target
+    .closest('.chart')
+    .querySelector(`text[data-id="${id}"]`)
     .remove()
   e.target.closest('.single-element').remove()
 }
