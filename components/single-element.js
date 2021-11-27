@@ -4,7 +4,7 @@ import Counter from './counter'
 export default class SingleElement extends React.Component {
   render () {
     return (
-      <div class='single-element'>
+      <div className='single-element'>
         <input
           type='text'
           placeholder='Your text here'
@@ -15,7 +15,7 @@ export default class SingleElement extends React.Component {
           onNumChange={this.props.onNumChange}
           count={this.props.count}
         />
-        <button class='btn'>Delete</button>
+        <button className='btn'>Delete</button>
       </div>
     )
   }
